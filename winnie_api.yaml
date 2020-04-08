@@ -66,6 +66,14 @@ components:
       type: object
       properties:
         weather_info:
+          $ref: '#/components/schemas/Forecast'
+        photo:
+          $ref: '#/components/schemas/ImageInfo'
+
+    Forecast:
+      type: object
+      properties:
+        weather:
           $ref: '#/components/schemas/Weather'
         main:
           $ref: '#/components/schemas/Main'
@@ -87,7 +95,7 @@ components:
         id:
           type: integer
           format: int32
-          description: Идентификатор погоды, подробно
+          description: Идентификатор погоды, подробно "https://openweathermap.org/weather-conditions"
         main:
           type: string
           description: Группа параметров погоды (Rain, Snow, Extreme итд.)
@@ -161,6 +169,13 @@ components:
           type: integer
           format: int64
           description: Время заката в UTC
+
+    ImageInfo:
+      type: object
+      properties:
+        url:
+          type: string
+          description: Произвольная картинка из местоположения
 
     ErrorResponse:
       type: object
