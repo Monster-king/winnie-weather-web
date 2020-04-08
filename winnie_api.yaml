@@ -1,0 +1,173 @@
+openapi: "3.0.2"
+info:
+  title: Winnie-weather API doc
+  version: 1.0.0
+
+paths:
+  /current/:
+    get:
+      tags:
+        - Weather
+      summary: Получение текущую погоду по заданной локации
+      parameters:
+        - $ref: '#/components/parameters/latParam'
+        - $ref: '#/components/parameters/lonParam'
+        - $ref: '#/components/parameters/localeParam'
+      responses:
+        "200":
+          description: Операция выполнена успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeatherResponse'
+        "400":
+          description: Произошла ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+servers:
+  - url: http://winnie.alladdin.tv
+
+components:
+
+  parameters:
+    latParam:
+      name: lat
+      in: query
+      required: true
+      description: "Latitue местоположения"
+      schema:
+        type: number
+        format: float
+        example: 41.2995
+    lonParam:
+      name: lon
+      in: query
+      required: true
+      description: "Longitude местоположения"
+      schema:
+        type: number
+        format: float
+        example: 69.2401
+    localeParam:
+      name: Content-Language
+      in: header
+      required: false
+      description: "Язык ответа сервера"
+      schema:
+        type: string
+        example: ru
+
+  schemas:
+
+    WeatherResponse:
+      type: object
+      properties:
+        weather_info:
+          $ref: '#/components/schemas/Weather'
+        main:
+          $ref: '#/components/schemas/Main'
+        visibility:
+          type: integer
+          format: int64
+          description: Видимость в метрах
+        wind:
+          $ref: '#/components/schemas/Wind'
+        clouds:
+          $ref: '#/components/schemas/Clouds'
+        sys:
+          $ref: '#/components/schemas/System'
+
+
+    Weather:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: Идентификатор погоды, подробно
+        main:
+          type: string
+          description: Группа параметров погоды (Rain, Snow, Extreme итд.)
+        description:
+          type: string
+          description: Погодные условия
+          example: небольшой проливной дождь
+        icon:
+          type: string
+          description: Иконка погоды
+
+    Main:
+      type: object
+      properties:
+        temp:
+          type: number
+          format: float
+          description: Температура в цельсий
+        feels_like:
+          type: number
+          format: float
+          description: Как чувствуется темература
+        temp_min:
+          type: number
+          format: float
+          description: минимальная температура
+        temp_max:
+          type: number
+          format: float
+          description: Максимальная температура
+        pressure:
+          type: number
+          format: float
+          description: Давление
+        humidity:
+          type: integer
+          format: int32
+          description: Влажность в процентах
+
+    Wind:
+      type: object
+      properties:
+        speed:
+          type: number
+          format: float
+          description: Скорость ветра в м/с
+        deg:
+          type: integer
+          format: int32
+          description: Направление ветра, град (метеорологическое)
+
+    Clouds:
+      type: object
+      properties:
+        all:
+          type: integer
+          format: int32
+          description: Облачность в процентах
+
+    System:
+      type: object
+      properties:
+        country:
+          type: string
+          description: Код страны
+        sunrise:
+          type: integer
+          format: int64
+          description: Время восхода в UTC
+        sunset:
+          type: integer
+          format: int64
+          description: Время заката в UTC
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Кастомный код ошибки, 10 для обозначения лимита запроса
+        message:
+          type: string
+          description: Сообщение ошибки

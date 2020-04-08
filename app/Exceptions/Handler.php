@@ -48,13 +48,13 @@ class Handler extends ExceptionHandler
      *
      * @throws \Throwable
      */
-    public function render($request, Exception $exception)
+    public function render($request, Throwable $exception)
     {
         if ($request->ajax() || $request->wantsJson() || $request->expectsJson() || $request->isJson()) {
             return response()->json(
                 [
                      'message' => $exception->getMessage(),
-                     'code' => $this->getExceptionHTTPStatusCode($exception)
+                     'code' => $this->getCustomErrorCode($exception)
                  ],
                 $this->getExceptionHTTPStatusCode($exception)
             );
@@ -68,5 +68,11 @@ class Handler extends ExceptionHandler
         // We will give Error 500 if none found
         return method_exists($e, 'getStatusCode') ?
              $e->getStatusCode() : 500;
+    }
+
+    private function getCustomErrorCode($e)
+    {
+        return property_exists($e, 'customCode') ?
+            $e->customCode : getExceptionHTTPStatusCode($e);
     }
 }
