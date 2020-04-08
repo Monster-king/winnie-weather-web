@@ -42,9 +42,6 @@ class WeatherController extends Controller
 
     private function getWeatherInfo($lat, $lon)
     {
-        $e = new HttpException(400, 'Request limit is over, please try again later');
-        $e->customCode=10;
-        throw $e;
         $client = new Client([
             'base_uri' => 'https://api.openweathermap.org/data/2.5/'
         ]);
@@ -68,7 +65,9 @@ class WeatherController extends Controller
             unset($weatherData['id']);
             unset($weatherData['cod']);
         } else {
-            throw new HttpException(10, 'Request limit is over, please try again later');
+            $e = new HttpException(400, 'Request limit is over, please try again later');
+            $e->customCode=10;
+            throw $e;
         }
         return $weatherData;
     }
