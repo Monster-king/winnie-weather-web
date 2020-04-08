@@ -73,6 +73,6 @@ class Handler extends ExceptionHandler
     private function getCustomErrorCode($e)
     {
         return property_exists($e, 'customCode') ?
-            $e->customCode : getExceptionHTTPStatusCode($e);
+            $e->customCode : $this->getExceptionHTTPStatusCode($e);
     }
 }
